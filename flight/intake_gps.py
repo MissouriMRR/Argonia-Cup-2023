@@ -62,17 +62,13 @@ def extract_gps(path: str) -> Waypoint:
     # Load the JSON file as a Python dict to be able to easily access the data
     with open(path, encoding="UTF-8") as data_file:
         json_data: dict[str, Any] = json.load(data_file)
-    
+
     target: list[float] = json_data["target"]
 
     ground_altitude: float = json_data["ground_altitude_amsl"]
 
     # Package all data into the Waypoint NamedTuple to be exported
-    target_data: Waypoint = {
-        target["latitude"],
-        target["longitude"],
-        target["altitude"]
-    }
+    target_data: Waypoint = {target["latitude"], target["longitude"], target["altitude"]}
     return target_data, ground_altitude
 
 
