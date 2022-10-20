@@ -64,7 +64,7 @@ def extract_gps(path: str) -> Tuple[Waypoint, float]:
     return target_data, ground_altitude
 
 
-# If run on its own, use the default data location
+# If run on it's own, use file path from command argument
 if __name__ == "__main__":
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
