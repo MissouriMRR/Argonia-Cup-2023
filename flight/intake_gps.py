@@ -4,12 +4,12 @@ a provided target waypoint data JSON file for the Argonia Cup competition.
 """
 from typing import Any, NamedTuple, Tuple
 import json
-import argparse
 
-# Initialize namedtuples to store latitude/longitude/altitude data for provided points
+
 class Waypoint(NamedTuple):
     """
     NamedTuple storing the data for a single waypoint.
+
     Attributes
     ----------
     latitude : float
@@ -28,10 +28,12 @@ class Waypoint(NamedTuple):
 def extract_gps(path: str) -> Tuple[Waypoint, float]:
     """
     Returns the target location and ground altitude from a json file specified by a parameter.
+
     Parameters
     ----------
     path : str
         File path to the target data JSON file.
+
     Returns
     -------
     target_data : Waypoint[float, float, float]
@@ -66,6 +68,8 @@ def extract_gps(path: str) -> Tuple[Waypoint, float]:
 
 # If run on it's own, use file path from command argument
 if __name__ == "__main__":
+    import argparse
+
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
