@@ -2,7 +2,7 @@
 Contains the extract_gps() function for extracting data out of
 a provided target waypoint data JSON file for the Argonia Cup competition.
 """
-from typing import Any, NamedTuple, Tuple
+from typing import Any, NamedTuple
 import json
 
 
@@ -25,7 +25,7 @@ class Waypoint(NamedTuple):
     altitude: float
 
 
-def extract_gps(path: str) -> Tuple[Waypoint, float]:
+def extract_gps(path: str) -> tuple[Waypoint, float]:
     """
     Returns the target location and ground altitude from a json file specified by a parameter.
 
