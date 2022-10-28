@@ -1,7 +1,7 @@
 {
     "target":{
-        "longitude": 37.167814,
-        "latitude": -97.739912,
+        "latitude": 37.167814,
+        "longitude": -97.739912,
         "altitude": 450
     },
     "ground_altitude_amsl": 1250
