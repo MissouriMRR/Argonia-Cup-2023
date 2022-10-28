@@ -49,14 +49,11 @@ async def move_to(drone: System, latitude: float, longitude: float, altitude: fl
             drone_alt: float = position.relative_altitude_m
 
             # If drone is within certain distance of the desired waypoint, break.
-            # Currently, this target is within .0000001 of a degree, or about a 0.11m radius.
+            # Currently, this target is within .00000001 of a degree, or about a 0.011m radius.
             # Formula: degrees / 111,139 = meters
-            if (
-                (round(drone_lat, 7) == round(latitude, 7))
-                and (round(drone_long, 7) == round(longitude, 7))
-                and (round(drone_alt, 1) == round(altitude, 1))
-            ):
-
+            if ((round(drone_lat,8)==round(latitude,8)) and
+                (round(drone_long,8)==round(longitude,8)) and
+                (round(drone_alt,3)==round(altitude,3))):
                 location_reached = True
                 break
 
