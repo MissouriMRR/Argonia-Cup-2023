@@ -17,7 +17,7 @@ async def run() -> None:
     """
     drone = System()
     await drone.connect(system_address="udp://:14540")
-    
+
     print("Waiting for drone to connect...")
     async for state in drone.core.connection_state():
         if state.is_connected:
@@ -26,10 +26,10 @@ async def run() -> None:
 
     print("-- Arming")
     await drone.action.arm()
-    
+
     # Set an initial speed limit
     await drone.action.set_maximum_speed(20)
-    
+
     print("Getting target location and ground altitude for landing...")
     """ target_data: Waypoint
     ground_altitude: float
@@ -62,21 +62,22 @@ async def run() -> None:
     speed_limit_lat = target_latitude - ((drone_lat - target_latitude) * speed_limit_mult)
     # Longitude:
     speed_limit_lon = target_longitude - ((drone_long - target_longitude) * speed_limit_mult)
-    
-    print(f'   Speed Limit Latitude: {speed_limit_lat:.7f}')
-    print(f'   Speed Limit Longitude: {speed_limit_lon:.7f}')
-    print(f'   Speed Limit Altitude: {speed_limit_alt}')
-    
+
+    print(f"   Speed Limit Latitude: {speed_limit_lat:.7f}")
+    print(f"   Speed Limit Longitude: {speed_limit_lon:.7f}")
+    print(f"   Speed Limit Altitude: {speed_limit_alt}")
+
     print("Moving to speed limit point...")
     # Have to round the speed limit location to 7 decimal places, or else the move_to function will get angry.
-    await move_to(drone, round(speed_limit_lat,7), round(speed_limit_lon,7), speed_limit_alt)
-    
+    await move_to(drone, round(speed_limit_lat, 7), round(speed_limit_lon, 7), speed_limit_alt)
+
     print("Setting speed limit and moving 50m above target location...")
     await drone.action.set_maximum_speed(6)
     await move_to(drone, target_latitude, target_longitude, 50)
-    
+
     print("Starting landing process...")
     await manual_land(drone, target_latitude, target_longitude)
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
