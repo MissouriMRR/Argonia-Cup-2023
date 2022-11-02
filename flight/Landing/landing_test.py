@@ -6,6 +6,8 @@ import sys
 sys.path.append('/home/alen/Argonia-Cup-2023/flight')
 from intake_gps import Waypoint, extract_gps
 from goto import move_to
+from landing import manual_land
+import logging
 
 async def run() -> None:
     """
@@ -13,7 +15,7 @@ async def run() -> None:
     """
     drone = System()
     await drone.connect(system_address="udp://:14540")
-
+    
     print("Waiting for drone to connect...")
     async for state in drone.core.connection_state():
         if state.is_connected:
@@ -22,6 +24,8 @@ async def run() -> None:
 
     print("-- Arming")
     await drone.action.arm()
+    # Set an initial speed limit
+    await drone.action.set_maximum_speed(20)
     
     print("Getting target location and ground altitude for landing...")
     """ target_data: Waypoint
@@ -49,26 +53,28 @@ async def run() -> None:
     # speed limit change and landing.
     # We want to first calculate our altitude to get our multiplier for our similar triangles.
     # Altitude:
-    speed_limit_alt = 400
+    speed_limit_alt = 122
     speed_limit_mult = (drone_alt - speed_limit_alt) / drone_alt
     # Latitude:
     speed_limit_lat = target_latitude - ((drone_lat - target_latitude) * speed_limit_mult)
     # Longitude:
     speed_limit_lon = target_longitude - ((drone_long - target_longitude) * speed_limit_mult)
     
-    print(f'   Speed Limit Latitude: {speed_limit_lat}')
-    print(f'   Speed Limit Longitude: {speed_limit_lon}')
+    print(f'   Speed Limit Latitude: {speed_limit_lat:.7f}')
+    print(f'   Speed Limit Longitude: {speed_limit_lon:.7f}')
     print(f'   Speed Limit Altitude: {speed_limit_alt}')
     
     print("Moving to speed limit point...")
-    await move_to(drone, speed_limit_lat, speed_limit_lon, speed_limit_alt)
+    # Have to round the speed limit location to 7 decimal places, or else the move_to function will get angry.
+    await move_to(drone, round(speed_limit_lat,7), round(speed_limit_lon,7), speed_limit_alt)
     
-    print("Moving 50m above target location...")
+    print("Setting speed limit and moving 50m above target location...")
+    await drone.action.set_maximum_speed(6)
     await move_to(drone, target_latitude, target_longitude, 50)
     
+    print("Starting landing process...")
+    await manual_land(drone, target_latitude, target_longitude)
     
-    
-
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
