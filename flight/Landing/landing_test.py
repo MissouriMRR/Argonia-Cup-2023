@@ -3,11 +3,13 @@
 import asyncio
 from mavsdk import System
 import sys
-sys.path.append('/home/alen/Argonia-Cup-2023/flight')
+
+sys.path.append("/home/alen/Argonia-Cup-2023/flight")
 from intake_gps import Waypoint, extract_gps
 from goto import move_to
 from landing import manual_land
 import logging
+
 
 async def run() -> None:
     """
@@ -24,6 +26,7 @@ async def run() -> None:
 
     print("-- Arming")
     await drone.action.arm()
+    
     # Set an initial speed limit
     await drone.action.set_maximum_speed(20)
     
@@ -35,9 +38,9 @@ async def run() -> None:
     print(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]
     target_longitude = target_data[1] """
-    target_latitude = 37.949297 
+    target_latitude = 37.949297
     target_longitude = -91.784501
-    
+
     print("Getting current location to calculate mission points:")
     async for position in drone.telemetry.position():
         # Assign longitude/latitude (in degrees) and altitude (in meters) to variables
@@ -46,7 +49,7 @@ async def run() -> None:
         drone_alt: float = position.relative_altitude_m
         print(f"Current Location: {drone_lat}, {drone_long}, {drone_alt}")
         break
-    
+
     print("Calculating mission points:")
     # While we could first just move to the latitude and longitude of the target and then go straight down,
     # we can take a way more efficient path by using pythagorean theorem to find optimal points for our
@@ -74,7 +77,6 @@ async def run() -> None:
     
     print("Starting landing process...")
     await manual_land(drone, target_latitude, target_longitude)
-    
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
