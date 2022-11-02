@@ -45,6 +45,7 @@ async def run() -> None:
     print("-- Using manual_land() to land the drone precisely on the waypoint")
     await landing.manual_land(drone, waypoints[3][0], waypoints[3][1])
 
+
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())

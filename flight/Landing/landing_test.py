@@ -3,9 +3,11 @@
 import asyncio
 from mavsdk import System
 import sys
-sys.path.append('/home/alen/Argonia-Cup-2023/flight')
+
+sys.path.append("/home/alen/Argonia-Cup-2023/flight")
 from intake_gps import Waypoint, extract_gps
 from goto import move_to
+
 
 async def run() -> None:
     """
@@ -22,7 +24,7 @@ async def run() -> None:
 
     print("-- Arming")
     await drone.action.arm()
-    
+
     print("Getting target location and ground altitude for landing...")
     """ target_data: Waypoint
     ground_altitude: float
@@ -31,9 +33,9 @@ async def run() -> None:
     print(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]
     target_longitude = target_data[1] """
-    target_latitude = 37.949297 
+    target_latitude = 37.949297
     target_longitude = -91.784501
-    
+
     print("Getting current location to calculate mission points:")
     async for position in drone.telemetry.position():
         # Assign longitude/latitude (in degrees) and altitude (in meters) to variables
@@ -42,7 +44,7 @@ async def run() -> None:
         drone_alt: float = position.relative_altitude_m
         print(f"Current Location: {drone_lat}, {drone_long}, {drone_alt}")
         break
-    
+
     print("Calculating mission points:")
     # While we could first just move to the latitude and longitude of the target and then go straight down,
     # we can take a way more efficient path by using pythagorean theorem to find optimal points for our
@@ -55,19 +57,16 @@ async def run() -> None:
     speed_limit_lat = target_latitude - ((drone_lat - target_latitude) * speed_limit_mult)
     # Longitude:
     speed_limit_lon = target_longitude - ((drone_long - target_longitude) * speed_limit_mult)
-    
-    print(f'   Speed Limit Latitude: {speed_limit_lat}')
-    print(f'   Speed Limit Longitude: {speed_limit_lon}')
-    print(f'   Speed Limit Altitude: {speed_limit_alt}')
-    
+
+    print(f"   Speed Limit Latitude: {speed_limit_lat}")
+    print(f"   Speed Limit Longitude: {speed_limit_lon}")
+    print(f"   Speed Limit Altitude: {speed_limit_alt}")
+
     print("Moving to speed limit point...")
     await move_to(drone, speed_limit_lat, speed_limit_lon, speed_limit_alt)
-    
+
     print("Moving 50m above target location...")
     await move_to(drone, target_latitude, target_longitude, 50)
-    
-    
-    
 
 
 if __name__ == "__main__":
