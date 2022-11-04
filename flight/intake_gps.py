@@ -79,5 +79,5 @@ if __name__ == "__main__":
     target_location: Waypoint
     launch_altitude: float
     target_location, launch_altitude = extract_gps(vars(args)["file"])
-    print(f"Target Location: {target_location[0]}")
+    print(f"Target Location: {target_location}")
     print(f"Altitude: {launch_altitude}")
