@@ -3,6 +3,7 @@ import mavsdk as sdk
 import logging
 import goto
 
+
 async def manual_land(drone: System, Target_Latitude, Target_Longitude) -> None:
         """
         Function to increasingly slowly land the drone while honing in on the target
