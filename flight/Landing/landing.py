@@ -4,7 +4,7 @@ import logging
 import goto
 
 
-async def manual_land(drone: System, Target_Latitude, Target_Longitude) -> None:
+async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: float) -> None:
     """
     Function to increasingly slowly land the drone while honing in on the target
     by using goto to lower the drone closer to the ground and to stay above the Target
