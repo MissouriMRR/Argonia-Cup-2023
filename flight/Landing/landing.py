@@ -13,7 +13,7 @@ async def manual_land(drone: System, Target_Latitude, Target_Longitude) -> None:
     until it gets around 6 inches off the ground then it will shut off the drone allowing it
     to get to the ground from a safe height
 
-        
+
     Parameters
     ----------
     drone : System
@@ -37,7 +37,7 @@ async def manual_land(drone: System, Target_Latitude, Target_Longitude) -> None:
             # Descends at 4.5 feet/s at altitudes > 10 meters down to 27 feet
             await drone.action.set_current_speed(4.5)
             await goto.move_to(drone, Target_Latitude, Target_Longitude, 27)
-            print(current_altitude) 
+            print(current_altitude)
             # Calls itself to update its location in the code
             await manual_land(drone, Target_Latitude, Target_Longitude)
             return
@@ -45,7 +45,7 @@ async def manual_land(drone: System, Target_Latitude, Target_Longitude) -> None:
             print(current_altitude)
             # Descends at 1.5 feet/s at altitudes < 10 meters and > 1 meters down to 6 inches
             await drone.action.set_current_speed(1.5)
-            await goto.move_to(drone, Target_Latitude, Target_Longitude, .5)
+            await goto.move_to(drone, Target_Latitude, Target_Longitude, 0.5)
             # Calls itself to update its location in the code
             # await manual_land(drone, Target_Latitude, Target_Longitude)
             return
