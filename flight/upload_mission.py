@@ -5,10 +5,11 @@ from mavsdk.mission import MissionItem, MissionPlan
 
 from intake_gps import Waypoint, extract_gps
 
-async def upload_mission(path='flight/data/target_data.json') -> None:
+
+async def upload_mission(path="flight/data/target_data.json") -> None:
     """
     Connects to the drone and uploads the mission plan for landing the drone.
-    
+
     Parameters
     ----------
     path : str
@@ -78,10 +79,10 @@ async def upload_mission(path='flight/data/target_data.json') -> None:
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    
+
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
-    
+
     loop.run_until_complete(upload_mission(vars(args)["file"]))

@@ -12,7 +12,8 @@ from goto import move_to
 from landing import manual_land
 import argparse
 
-async def run_mission(path='flight/data/target_data.json') -> None:
+
+async def run_mission(path="flight/data/target_data.json") -> None:
     """
     Tests the goto function by moving the drone to four different waypoints.
     """
@@ -27,14 +28,14 @@ async def run_mission(path='flight/data/target_data.json') -> None:
 
     # Set an initial speed limit
     await drone.action.set_maximum_speed(20)
-    
+
     print("Getting target location and ground altitude for landing...")
     target_data: Waypoint
     ground_altitude: float
     target_data, ground_altitude = extract_gps(path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-    
+
     await drone.mission.start_mission()
 
     async for mission_progress in drone.mission.mission_progress():
@@ -50,10 +51,10 @@ async def run_mission(path='flight/data/target_data.json') -> None:
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    
+
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
-    
+
     loop.run_until_complete(run_mission(vars(args)["file"]))
