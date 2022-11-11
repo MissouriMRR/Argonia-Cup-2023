@@ -1,6 +1,6 @@
-'''
+"""
 Connects to the drone and uploads the mission plan for landing the drone.
-'''
+"""
 import argparse
 import asyncio
 from mavsdk import System
@@ -9,7 +9,7 @@ from mavsdk.mission import MissionItem, MissionPlan
 from intake_gps import Waypoint, extract_gps
 
 
-async def upload_mission(path: str ="flight/data/target_data.json") -> None:
+async def upload_mission(path: str = "flight/data/target_data.json") -> None:
     """
     Connects to the drone and uploads the mission plan for landing the drone.
 
