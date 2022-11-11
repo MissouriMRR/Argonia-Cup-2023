@@ -1,3 +1,6 @@
+'''
+Lands the drone precisely on the target using goto and slowing it down as it gets closer to the ground
+'''
 from mavsdk import System
 import mavsdk as sdk
 import logging
@@ -47,7 +50,7 @@ async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: f
             await drone.action.set_current_speed(1.5)
             await goto.move_to(drone, Target_Latitude, Target_Longitude, 0.5)
             # Calls itself to update its location in the code
-            # await manual_land(drone, Target_Latitude, Target_Longitude)
+            await manual_land(drone, Target_Latitude, Target_Longitude)
             return
         else:
             # Sets downward velocity to 0, so the drone will stop moving

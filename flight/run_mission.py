@@ -1,3 +1,6 @@
+'''
+Tests the goto function through a mission
+'''
 import asyncio
 import sys
 
@@ -13,9 +16,14 @@ from landing import manual_land
 import argparse
 
 
-async def run_mission(path="flight/data/target_data.json") -> None:
+async def run_mission(path: str="flight/data/target_data.json") -> None:
     """
     Tests the goto function by moving the drone to four different waypoints.
+
+     Parameters
+    ----------
+    path : str
+        File path to the target data JSON file.
     """
     drone = System()
     await drone.connect(system_address="udp://:14540")
