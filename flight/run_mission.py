@@ -1,6 +1,6 @@
-'''
+"""
 runs a mission from a json file to get the drone above a target and lands it
-'''
+"""
 import asyncio
 import goto
 import logging
@@ -15,7 +15,7 @@ import argparse
 async def run_mission(path: str = "flight/data/target_data.json") -> None:
     """
     Uses data from a json file to retrieve a mission then runs it to get the drone above the target
-    once the drone gets 225 feet above the ground the landing code is run which brings it down 
+    once the drone gets 225 feet above the ground the landing code is run which brings it down
     at progressively slower speeds precisely over the target till it lands the drone and shuts it down
 
     Parameters
@@ -46,7 +46,7 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     target_data, ground_altitude = extract_gps(path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-    #await goto.move_to(drone,target_latitude,target_longitude, 500)
+    # await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
     async for position in drone.telemetry.position():
@@ -57,12 +57,13 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     logging.info("Starting landing process...")
     await manual_land(drone, target_latitude, target_longitude)
 
+
 if __name__ == "__main__":
-    '''
+    """
     runs run_mission to land a drone with a mission from a json file then lands it precisely
     from the coordinates given by the json
     This is run by python3 run_mission.py -file {json file path}
-    '''
+    """
     loop = asyncio.get_event_loop()
 
     # Read file to be used as the data file using the -file argument
