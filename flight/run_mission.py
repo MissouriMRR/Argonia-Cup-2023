@@ -12,7 +12,7 @@ from landing import manual_land
 import argparse
 
 
-async def run_mission(path: str="flight/data/target_data.json") -> None:
+async def run_mission(path: str = "flight/data/target_data.json") -> None:
     """
     Uses data from a json file to retrieve a mission then runs it to get the drone above the target
     once the drone gets 225 feet above the ground the landing code is run which brings it down 
