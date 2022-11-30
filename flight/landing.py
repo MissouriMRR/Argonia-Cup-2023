@@ -16,7 +16,6 @@ async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: f
     until it gets around 6 inches off the ground then it will shut off the drone allowing it
     to get to the ground from a safe height
 
-
     Parameters
     ----------
     drone : System
@@ -26,6 +25,8 @@ async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: f
     Target_Longitude : float
         a float containing the target longitude that needs to be reached
 
+    Notes
+    -----
     Recursively calls itself to update its own position and when it calls itself
     it should run the next goto to get even lower
     """
@@ -33,20 +34,17 @@ async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: f
     # Lands the drone using the goto command to get it centered on the target while landing slowly
     logging.info("Landing the drone")
     async for position in drone.telemetry.position():
-        current_altitude: float = round(position.relative_altitude_m, 3)
-        print(current_altitude)
-        if current_altitude > 10.0:
-            print(current_altitude)
-            # Descends at 4.5 feet/s at altitudes > 10 meters down to 27 feet
+        current_altitude: float = round(position.relative_altitude_m, 3) * 3.28084
+        logging.info(current_altitude)
+        if current_altitude > 30.0:
+            # Descends at 4.5 feet/s at altitudes > 30 feet down to 27 feet
             await drone.action.set_current_speed(4.5)
             await goto.move_to(drone, Target_Latitude, Target_Longitude, 27)
-            print(current_altitude)
             # Calls itself to update its location in the code
             await manual_land(drone, Target_Latitude, Target_Longitude)
             return
-        elif 10.0 > current_altitude > 1:
-            print(current_altitude)
-            # Descends at 1.5 feet/s at altitudes < 10 meters and > 1 meters down to 6 inches
+        elif 30.0 > current_altitude > 3:
+            # Descends at 1.5 feet/s at altitudes < 30 feet and > 3 feet down to 6 inches
             await drone.action.set_current_speed(1.5)
             await goto.move_to(drone, Target_Latitude, Target_Longitude, 0.5)
             # Calls itself to update its location in the code

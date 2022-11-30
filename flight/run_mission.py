@@ -1,29 +1,32 @@
 '''
-Tests the goto function through a mission
+runs a mission from a json file to get the drone above a target and lands it
 '''
 import asyncio
-import sys
+import goto
+import logging
 
 from mavsdk import System
 
-import logging
-
-from mavsdk.mission import MissionItem, MissionPlan
-
 from intake_gps import Waypoint, extract_gps
-from goto import move_to
 from landing import manual_land
 import argparse
 
 
 async def run_mission(path: str="flight/data/target_data.json") -> None:
     """
-    Tests the goto function by moving the drone to four different waypoints.
+    Uses data from a json file to retrieve a mission then runs it to get the drone above the target
+    once the drone gets 225 feet above the ground the landing code is run which brings it down 
+    at progressively slower speeds precisely over the target till it lands the drone and shuts it down
 
-     Parameters
+    Parameters
     ----------
     path : str
         File path to the target data JSON file.
+
+    Notes
+    -----
+    Drone will be shut off after this is run
+    It can be run by python3 run_mission.py -file {json file path}
     """
     drone = System()
     await drone.connect(system_address="udp://:14540")
@@ -37,27 +40,29 @@ async def run_mission(path: str="flight/data/target_data.json") -> None:
     # Set an initial speed limit
     await drone.action.set_maximum_speed(20)
 
-    print("Getting target location and ground altitude for landing...")
+    logging.info("Getting target location and ground altitude for landing...")
     target_data: Waypoint
     ground_altitude: float
     target_data, ground_altitude = extract_gps(path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-
+    #await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
-
-    async for mission_progress in drone.mission.mission_progress():
-        print(f"Mission upload: {mission_progress.current}/{mission_progress.total}")
-        if mission_progress.current == mission_progress.total:
-            print("-- Mission Completed!")
+    logging.info("running the mission")
+    async for position in drone.telemetry.position():
+        current_altitude: float = round(position.relative_altitude_m, 3)
+        if current_altitude < 75.0:
             break
-        await asyncio.sleep(5)
 
-    print("Starting landing process...")
+    logging.info("Starting landing process...")
     await manual_land(drone, target_latitude, target_longitude)
 
-
 if __name__ == "__main__":
+    '''
+    runs run_mission to land a drone with a mission from a json file then lands it precisely
+    from the coordinates given by the json
+    This is run by python3 run_mission.py -file {json file path}
+    '''
     loop = asyncio.get_event_loop()
 
     # Read file to be used as the data file using the -file argument
