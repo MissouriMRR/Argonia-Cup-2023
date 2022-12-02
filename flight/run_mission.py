@@ -46,7 +46,7 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     target_data, ground_altitude = extract_gps(path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-    # await goto.move_to(drone,target_latitude,target_longitude, 500)
+    await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
     async for position in drone.telemetry.position():
