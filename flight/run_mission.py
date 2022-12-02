@@ -63,12 +63,15 @@ if __name__ == "__main__":
     runs run_mission to land a drone with a mission from a json file then lands it precisely
     from the coordinates given by the json
     This is run by python3 run_mission.py -file {json file path}
+    If no file path is specified it will use the default target data file path
     """
-    loop = asyncio.get_event_loop()
 
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
-
-    loop.run_until_complete(run_mission(vars(args)["file"]))
+    
+    data_path = vars(args)["file"]
+    if data_path is None:
+        data_path = "flight/data/golf_target.json"
+    loop = asyncio.run(run_mission(data_path))

@@ -81,11 +81,19 @@ async def upload_mission(path: str = "flight/data/target_data.json") -> None:
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    """
+    Uploads a mission plan to QGroundControl for the drone to land at a target.
+    This is run by python3 upload_mission.py -file {json file path}.
+    If no file path is specified it will use the default target data file path.
+    """
 
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
-
-    loop.run_until_complete(upload_mission(vars(args)["file"]))
+    
+    # Use default target data if no file is specified
+    data_path = vars(args)["file"]
+    if data_path is None:
+        data_path = "flight/data/golf_target.json"
+    loop = asyncio.run(upload_mission(data_path))
