@@ -91,7 +91,7 @@ if __name__ == "__main__":
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
-    
+
     # Use default target data if no file is specified
     data_path = vars(args)["file"]
     if data_path is None:
