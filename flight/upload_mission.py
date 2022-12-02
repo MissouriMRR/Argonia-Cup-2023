@@ -86,14 +86,13 @@ if __name__ == "__main__":
     This is run by python3 upload_mission.py -file {json file path}.
     If no file path is specified it will use the default target data file path.
     """
-
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
 
     # Use default target data if no file is specified
-    data_path = vars(args)["file"]
-    if data_path is None:
-        data_path = "flight/data/target_data.json"
-    loop = asyncio.run(upload_mission(data_path))
+    DATA_PATH = vars(args)["file"]
+    if DATA_PATH is None:
+        DATA_PATH = "flight/data/target_data.json"
+    asyncio.run(upload_mission(DATA_PATH))

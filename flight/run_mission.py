@@ -2,7 +2,6 @@
 runs a mission from a json file to get the drone above a target and lands it
 """
 import asyncio
-import goto
 import logging
 
 from mavsdk import System
@@ -16,7 +15,7 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     """
     Uses data from a json file to retrieve a mission then runs it to get the drone above the target
     once the drone gets 225 feet above the ground the landing code is run which brings it down
-    at progressively slower speeds precisely over the target till it lands the drone and shuts it down
+    at progressively slower speeds precisely over the target till it lands the drone and shut down
 
     Parameters
     ----------
@@ -65,13 +64,12 @@ if __name__ == "__main__":
     This is run by python3 run_mission.py -file {json file path}
     If no file path is specified it will use the default target data file path
     """
-
     # Read file to be used as the data file using the -file argument
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("-file")
     args: argparse.Namespace = parser.parse_args()
 
-    data_path = vars(args)["file"]
-    if data_path is None:
-        data_path = "flight/data/target_data.json"
-    loop = asyncio.run(run_mission(data_path))
+    DATA_PATH = vars(args)["file"]
+    if DATA_PATH is None:
+        DATA_PATH = "flight/data/target_data.json"
+    asyncio.run(run_mission(DATA_PATH))
