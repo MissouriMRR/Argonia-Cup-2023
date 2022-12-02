@@ -48,8 +48,12 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     # await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
+<<<<<<< HEAD
     # Once the drone is below 75m the slow landing code begins to run
     # This is needed as the mission won't end unless a break is included
+=======
+    # runs this loop till drone falls below 75 meters so the drone will exit the mission and go to landing code
+>>>>>>> 04eef6abfd7d482cff892363d7e7f4ebb73f1fbf
     async for position in drone.telemetry.position():
         current_altitude: float = round(position.relative_altitude_m, 3)
         if current_altitude < 75.0:
