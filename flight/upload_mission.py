@@ -3,6 +3,7 @@ Connects to the drone and uploads the mission plan for landing the drone.
 """
 import argparse
 import asyncio
+import logging
 from mavsdk import System
 from mavsdk.mission import MissionItem, MissionPlan
 
@@ -21,18 +22,18 @@ async def upload_mission(path: str = "flight/data/target_data.json") -> None:
     drone = System()
     await drone.connect(system_address="udp://:14540")
 
-    print("Waiting for drone to connect...")
+    logging.info("Waiting for drone to connect...")
     async for state in drone.core.connection_state():
         if state.is_connected:
-            print("Drone discovered!")
+            logging.info("Drone discovered!")
             break
 
-    print("Getting target location and ground altitude for landing...")
+    logging.info("Getting target location and ground altitude for landing...")
     target_data: Waypoint
     ground_altitude: float
     target_data, ground_altitude = extract_gps(path)
-    print(f"Target Location: {target_data}")
-    print(f"Altitude: {ground_altitude}")
+    logging.info(f"Target Location: {target_data}")
+    logging.info(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]
     target_longitude = target_data[1]
 
@@ -76,7 +77,7 @@ async def upload_mission(path: str = "flight/data/target_data.json") -> None:
 
     landing_mission = MissionPlan([speed_limit_point, above_target_point])
 
-    print("Uploading mission...")
+    logging.info("Uploading mission...")
     await drone.mission.upload_mission(landing_mission)
 
 

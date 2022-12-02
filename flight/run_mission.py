@@ -30,10 +30,10 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     drone = System()
     await drone.connect(system_address="udp://:14540")
 
-    print("Waiting for drone to connect...")
+    logging.info("Waiting for drone to connect...")
     async for state in drone.core.connection_state():
         if state.is_connected:
-            print("Drone discovered!")
+            logging.info("Drone discovered!")
             break
 
     # Set an initial speed limit
@@ -48,6 +48,8 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     # await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
+    # Once the drone is below 75m the slow landing code begins to run
+    # This is needed as the mission won't end unless a break is included
     async for position in drone.telemetry.position():
         current_altitude: float = round(position.relative_altitude_m, 3)
         if current_altitude < 75.0:
