@@ -95,5 +95,5 @@ if __name__ == "__main__":
     # Use default target data if no file is specified
     data_path = vars(args)["file"]
     if data_path is None:
-        data_path = "flight/data/golf_target.json"
+        data_path = "flight/data/target_data.json"
     loop = asyncio.run(upload_mission(data_path))

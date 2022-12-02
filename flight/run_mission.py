@@ -73,5 +73,5 @@ if __name__ == "__main__":
     
     data_path = vars(args)["file"]
     if data_path is None:
-        data_path = "flight/data/golf_target.json"
+        data_path = "flight/data/target_data.json"
     loop = asyncio.run(run_mission(data_path))
