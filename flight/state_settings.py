@@ -19,7 +19,7 @@ class StateSettings:
             Enables access to description of current flight mission
     Attributes
     ----------
-        __competition_waypoints: bool
+        competition_waypoints: bool
             Determines if the flight should use competition waypoints or not. If false, will use golf course waypoints.
         __run_title: str
             Title of Competition
