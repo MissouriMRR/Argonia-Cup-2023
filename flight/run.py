@@ -5,7 +5,8 @@ import logging
 
 if __name__ == "__main__":
     # Run system (multiprocessing) manager
+    
     try:
         pass
     except:  # pylint: disable=bare-except
-        logging.exception("Error in running system manager")
+        logging.exception("Error in running system manager :(")

@@ -7,9 +7,8 @@ from multiprocessing import Process, Queue
 from multiprocessing.managers import BaseManager
 
 from logger import init_logger, worker_configurer
-from communication import Communication
-from flight.flight import flight
-from flight.state_settings import StateSettings
+from flight import flight
+from state_machine import StateSettings
 
 
 class FlightManager:
