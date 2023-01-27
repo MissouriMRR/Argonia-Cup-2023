@@ -8,8 +8,8 @@ from multiprocessing.managers import BaseManager
 
 from logger import init_logger, worker_configurer
 from flight import flight
-from state_machine import StateSettings
-
+from state_settings import StateSettings
+from communication import Communication
 
 class FlightManager:
     def __init__(self, state_settings: StateSettings) -> None:
