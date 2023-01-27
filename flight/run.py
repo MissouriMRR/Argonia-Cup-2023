@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Main initial runnable file for the codebase"""
+"""Main runnable file for the codebase"""
 
 import logging
 
+from flight_manager import FlightManager
+
+
 if __name__ == "__main__":
-    # Run system (multiprocessing) manager
-    
+    # Run multiprocessing function
     try:
-        pass
-    except:  # pylint: disable=bare-except
-        logging.exception("Error in running system manager :(")
+        flight_manager: FlightManager = FlightManager()
+        flight_manager.main()
+    except:
+        logging.exception("Unfixable error detected")
