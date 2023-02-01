@@ -10,15 +10,22 @@ from mavsdk.mission import MissionItem, MissionPlan
 from intake_gps import Waypoint, extract_gps
 
 
-async def upload_mission(path: str = "flight/data/target_data.json") -> None:
+async def upload_mission(competition: bool) -> None:
     """
     Connects to the drone and uploads the mission plan for landing the drone.
 
     Parameters
     ----------
-    path : str
-        File path to the target data JSON file.
+    competition : bool
+        Decides if competition waypoints are used in the mission or not.
     """
+
+    waypoint_path: str
+    if competition:
+        waypoint_path = "flight/data/target_data.json"
+    else:
+        waypoint_path = "flight/data/golf_target.json"
+
     drone = System()
     await drone.connect(system_address="udp://:14540")
 
@@ -31,7 +38,7 @@ async def upload_mission(path: str = "flight/data/target_data.json") -> None:
     logging.info("Getting target location and ground altitude for landing...")
     target_data: Waypoint
     ground_altitude: float
-    target_data, ground_altitude = extract_gps(path)
+    target_data, ground_altitude = extract_gps(waypoint_path)
     logging.info(f"Target Location: {target_data}")
     logging.info(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]

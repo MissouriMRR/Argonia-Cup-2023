@@ -11,7 +11,7 @@ from landing import manual_land
 import argparse
 
 
-async def run_mission(path: str = "flight/data/target_data.json") -> None:
+async def run_mission(competition: bool) -> None:
     """
     Uses data from a json file to retrieve a mission then runs it to get the drone above the target
     once the drone gets 225 feet above the ground the landing code is run which brings it down
@@ -19,14 +19,21 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
 
     Parameters
     ----------
-    path : str
-        File path to the target data JSON file.
+    competition : bool
+        Decides if competition waypoints are used in the mission or not.
 
     Notes
     -----
     Drone will be shut off after this is run
     It can be run by python3 run_mission.py -file {json file path}
     """
+
+    waypoint_path: str
+    if competition:
+        waypoint_path = "flight/data/target_data.json"
+    else:
+        waypoint_path = "flight/data/golf_target.json"
+
     drone = System()
     await drone.connect(system_address="udp://:14540")
 
@@ -42,7 +49,7 @@ async def run_mission(path: str = "flight/data/target_data.json") -> None:
     logging.info("Getting target location and ground altitude for landing...")
     target_data: Waypoint
     ground_altitude: float
-    target_data, ground_altitude = extract_gps(path)
+    target_data, ground_altitude = extract_gps(waypoint_path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
     # await goto.move_to(drone,target_latitude,target_longitude, 500)
