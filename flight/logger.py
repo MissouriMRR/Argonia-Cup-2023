@@ -4,10 +4,8 @@ from datetime import datetime
 from multiprocessing import Queue
 from logging import Formatter, FileHandler, StreamHandler
 from logging.handlers import QueueHandler, QueueListener
-from colorlog import ColoredFormatter
 
 LOG_FILE: str = f"logs/{datetime.now()}.log"
-COLOR_LOG_FORMAT: str = "%(log_color)s%(levelname)s | %(asctime)s @  %(processName)s:%(funcName)s > %(message)s%(reset)s"
 LOG_FORMAT: str = "%(levelname)s | %(asctime)s @  %(processName)s:%(funcName)s > %(message)s"
 LOG_LEVEL = logging.DEBUG
 
@@ -24,7 +22,7 @@ def init_logger(queue: Queue) -> QueueListener:
         QueueListener
             Object to process log messages
     """
-    console_formatter: Formatter = ColoredFormatter(COLOR_LOG_FORMAT)
+    console_formatter: Formatter = logging.Formatter(LOG_FORMAT)
     file_formatter: Formatter = logging.Formatter(LOG_FORMAT)
 
     file: FileHandler = logging.FileHandler(LOG_FILE, "a")

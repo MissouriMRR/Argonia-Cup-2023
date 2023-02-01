@@ -3,8 +3,7 @@
 
 class Communication:
     """
-    Object to communicate between flight and vision
-    Methods
+    Object to communicate to itself to monitor itself
     -------
         __init__() -> None
             Initializes current state

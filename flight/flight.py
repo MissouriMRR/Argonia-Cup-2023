@@ -7,8 +7,9 @@ import mavsdk as sdk
 from multiprocessing import Queue
 
 import logger
-from flight.states import STATES
-from flight.states.state import State, StateSettings
+from state.state import State 
+from state_settings import StateSettings
+from communication import Communication
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
@@ -199,7 +200,7 @@ async def start_flight(comm: Communication, drone: System, state_settings: State
 
     try:
         # Initialize the state machine at the current state
-        initial_state: State = STATES[comm.get_state()](state_settings)
+        initial_state: State = State[comm.get_state()](state_settings)
         state_machine: StateMachine = StateMachine(initial_state, drone)
         await state_machine.run()
     except Exception:
