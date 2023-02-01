@@ -111,15 +111,13 @@ async def wait_for_drone(drone: System) -> None:
             return
 
 
-def flight(comm: Communication, sim: bool, log_queue: Queue, state_settings: StateSettings) -> None:
+def flight(comm: Communication, log_queue: Queue, state_settings: StateSettings) -> None:
     """
     Starts the asynchronous event loop for the flight code
     Parameters
     ----------
         comm: Communication
             Communication object for collaboration in pipeline
-        sim: bool
-            Determines if simulator is in use
         log_queue: Queue
             Queue object to hold logging processes
         state_settings: StateSettings
@@ -127,23 +125,21 @@ def flight(comm: Communication, sim: bool, log_queue: Queue, state_settings: Sta
     """
     logger.worker_configurer(log_queue)
     logging.debug("Flight process started")
-    asyncio.get_event_loop().run_until_complete(init_and_begin(comm, sim, state_settings))
+    asyncio.get_event_loop().run_until_complete(init_and_begin(comm, state_settings))
 
 
-async def init_and_begin(comm: Communication, sim: bool, state_settings: StateSettings) -> None:
+async def init_and_begin(comm: Communication, state_settings: StateSettings) -> None:
     """
     Creates drone object and passes it to start_flight
     Parameters
     ----------
         comm: Communication
             Communication object for collaboration in pipeline
-        sim: bool
-            Decides if simulator is in use
         state_settings: StateSettings
             Settings for flight state machine
     """
     try:
-        drone: System = await init_drone(sim)
+        drone: System = await init_drone(state_settings: StateSettings)
         await start_flight(comm, drone, state_settings)
     except DroneNotFoundError:
         logging.exception("Drone was not found")
@@ -153,19 +149,20 @@ async def init_and_begin(comm: Communication, sim: bool, state_settings: StateSe
         return
 
 
-async def init_drone(sim: bool) -> System:
+async def init_drone(state_settings: StateSettings) -> System:
     """
     Connects to the pixhawk or simulator and returns the drone
     Parameters
     ----------
-        sim: bool
-            Decides if simulator is in use
+        state_settings: StateSettings
+            Settings for flight state machine
     Returns
     -------
         System
             MAVSDK System object corresponding to the drone
     """
-    sys_addr: str = SIM_ADDR if sim else CONTROLLER_ADDR
+
+    sys_addr: str = SIM_ADDR if state_settings.simulation else CONTROLLER_ADDR
     drone: System = System()
     await drone.connect(system_address=sys_addr)
     logging.debug("Waiting for drone to connect...")

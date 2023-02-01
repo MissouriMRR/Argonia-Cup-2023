@@ -12,7 +12,7 @@ from state_settings import StateSettings
 from communication import Communication
 
 class FlightManager:
-    def __init__(self, state_settings: StateSettings) -> None:
+    def __init__(self, state_settings: StateSettings = StateSettings()) -> None:
         """
         Constructor for the flight manager
 
@@ -28,18 +28,23 @@ class FlightManager:
         Central function to run all threads of state machine
         """
         parser: argparse.ArgumentParser = argparse.ArgumentParser()
-        parser.add_argument("-s", "--simulation", help="using the simulator", action="store_true")
+        parser.add_argument("-c", "--competition", help="Using the competition waypoints", action="store_true")
+        parser.add_argument("-s", "--simulation", help="Using a simulator", action="store_true")
         args = parser.parse_args()
+        logging.debug("Competition flag %s", "enabled" if args.competition else "disabled")
         logging.debug("Simulation flag %s", "enabled" if args.simulation else "disabled")
-        self.run_threads(args.simulation)
+        if args.competition: self.state_settings.competition = true
+        if args.simulation: self.state_settings.simulation = true
+        self.run_threads()
 
-    def init_flight(self, flight_args: Tuple[Communication, bool, Queue, worker_configurer, StateSettings]) -> Process:
+        
+    def init_flight(self, flight_args: Tuple[Communication, Queue, worker_configurer, StateSettings]) -> Process:
         """
         Initializes the flight state machine process
 
         Parameters
         ----------
-            flight_args: Tuple[Communication, bool, Queue, worker_configurer, StateSettings]
+            flight_args: Tuple[Communication, Queue, worker_configurer, StateSettings]
                 Arguments necessary for flight logging and state machine settings
 
         Returns
@@ -49,14 +54,9 @@ class FlightManager:
         """
         return Process(target=flight, name="flight", args=flight_args)
 
-    def run_threads(self, sim: bool) -> None:
+    def run_threads(self) -> None:
         """
         Runs the various threads present in the state machine
-
-        Parameters
-        ----------
-            sim: bool
-                Decides if the simulator is active
         """
         # Register Communication object to Base Manager
         BaseManager.register("Communication", Communication)
@@ -76,7 +76,7 @@ class FlightManager:
         # Create new processes
         logging.info("Spawning Processes")
 
-        flight_args = (comm_obj, sim, log_queue, worker_configurer, self.state_settings)
+        flight_args = (comm_obj, log_queue, worker_configurer, self.state_settings)
         flight_process: Process = self.init_flight(flight_args)
         # Start flight function
         flight_process.start()

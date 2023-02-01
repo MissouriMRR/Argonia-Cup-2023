@@ -26,13 +26,15 @@ class StateSettings:
         __run_description: str
             Description for Competition
     """
-    def __init__(self, competition_waypoints: bool, title: str, description: str) -> None:
+    def __init__(self, competition: bool = false, simulator: bool = true, title: str, description: str) -> None:
         """
         Default constructor results in default settings
         Parameters
         ----------
-        competition_waypoints: bool
+        competition: bool
             Determines if the flight should use competition waypoints or not. If false, will use golf course waypoints.
+        simulation: bool
+            Determines if the state machine should use connect to a simulator or a connected drone.
         __run_title: str
             Title of current flight mission, for logging purposes
         __run_description: str
@@ -41,7 +43,8 @@ class StateSettings:
         -------
             None
         """
-        self.competition_waypoints = competition_waypoints
+        self.competition = competition
+        self.simulation = simulation
         self.__run_title = title
         self.__run_description = description
     
