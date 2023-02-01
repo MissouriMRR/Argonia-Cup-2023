@@ -7,9 +7,7 @@ import mavsdk as sdk
 from multiprocessing import Queue
 
 import logger
-from state.state import State 
-from state_settings import StateSettings
-from communication import Communication
+from ..run import simulation
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
@@ -17,47 +15,27 @@ CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhaw
 
 class DroneNotFoundError(Exception):
     """Exception for when the drone doesn't connect"""
+    logging.warning("WARNING!!!! DRONE NOT FOUND!?!?!?!?@@!@?!@")
     pass
 
-
-class StateMachine:
-    """
-    Initializes the state machine and runs the states.
-    Attributes
-    ----------
-        current_state: State
-            State that is currently being executed.
-        drone: System
-            Our drone object; used for all flight functions.
-    Methods
-    -------
-        __init__() -> None
-            Constructor for State Machine
-        run() -> None
-            Runs the state machine by progressing through flight states
-    """
-
-    def __init__(self, initial_state: State, drone: System) -> None:
+async def _check_arm_or_arm(self, drone: System) -> None:
         """
-        The constructor for StateMachine class.
+        Verifies that the drone is armed, if not armed, arms the drone
         Parameters
-        ----------
-            initial_state: State
-                First state for the flight state machine
+        ---------
             drone: System
-                MAVSDK object to manually control the drone
+                The drone system; used for flight operations.
+        Returns
+        -------
+            None
         """
-        self.current_state: State = initial_state
-        self.drone: System = drone
-
-    async def run(self) -> None:
-        """
-        Runs the state machine by infinitely replacing current_state until a
-        state return None.
-        """
-        while self.current_state:
-            self.current_state: State = await self.current_state.run(self.drone)
-
+        async for is_armed in drone.telemetry.armed():
+            if not is_armed:
+                logging.debug("Not armed. Attempting to arm")
+                await drone.action.arm()
+            else:
+                logging.warning("Drone armed")
+                break
 
 async def log_flight_mode(drone: System) -> None:
     """
@@ -75,7 +53,7 @@ async def log_flight_mode(drone: System) -> None:
             logging.debug("Flight mode: %s", flight_mode)
 
 
-async def observe_is_in_air(drone: System, comm: Communication) -> None:
+async def observe_is_in_air(drone: System, self) -> None:
     """
     Monitors whether the drone is flying or not and
     returns after landing
@@ -94,7 +72,7 @@ async def observe_is_in_air(drone: System, comm: Communication) -> None:
             was_in_air: bool = is_in_air
 
         if was_in_air and not is_in_air:
-            comm.current_state = "exit"
+            self.__state = "exit"
             return
 
 
@@ -112,7 +90,7 @@ async def wait_for_drone(drone: System) -> None:
             return
 
 
-def flight(comm: Communication, log_queue: Queue, state_settings: StateSettings) -> None:
+def flight(self, log_queue: Queue, simulation) -> None:
     """
     Starts the asynchronous event loop for the flight code
     Parameters
@@ -126,10 +104,10 @@ def flight(comm: Communication, log_queue: Queue, state_settings: StateSettings)
     """
     logger.worker_configurer(log_queue)
     logging.debug("Flight process started")
-    asyncio.get_event_loop().run_until_complete(init_and_begin(comm, state_settings))
+    asyncio.get_event_loop().run_until_complete(init_and_begin(self, simulation))
 
 
-async def init_and_begin(comm: Communication, state_settings: StateSettings) -> None:
+async def init_and_begin(self, simulation) -> None:
     """
     Creates drone object and passes it to start_flight
     Parameters
@@ -140,8 +118,8 @@ async def init_and_begin(comm: Communication, state_settings: StateSettings) -> 
             Settings for flight state machine
     """
     try:
-        drone: System = await init_drone(state_settings: StateSettings)
-        await start_flight(comm, drone, state_settings)
+        drone: System = await init_drone(simulation)
+        await start_flight(self, drone)
     except DroneNotFoundError:
         logging.exception("Drone was not found")
         return
@@ -150,7 +128,7 @@ async def init_and_begin(comm: Communication, state_settings: StateSettings) -> 
         return
 
 
-async def init_drone(state_settings: StateSettings) -> System:
+async def init_drone(simulation) -> System:
     """
     Connects to the pixhawk or simulator and returns the drone
     Parameters
@@ -163,7 +141,7 @@ async def init_drone(state_settings: StateSettings) -> System:
             MAVSDK System object corresponding to the drone
     """
 
-    sys_addr: str = SIM_ADDR if state_settings.simulation else CONTROLLER_ADDR
+    sys_addr: str = SIM_ADDR if run.simulation else CONTROLLER_ADDR
     drone: System = System()
     await drone.connect(system_address=sys_addr)
     logging.debug("Waiting for drone to connect...")
@@ -178,7 +156,7 @@ async def init_drone(state_settings: StateSettings) -> System:
     return drone
 
 
-async def start_flight(comm: Communication, drone: System, state_settings: StateSettings) -> None:
+async def start_flight(self, drone: System) -> None:
     """
     Creates the state machine and watches for exceptions
     Parameters
@@ -193,13 +171,11 @@ async def start_flight(comm: Communication, drone: System, state_settings: State
     # Continuously log flight mode changes
     flight_mode_task = asyncio.ensure_future(log_flight_mode(drone))
     # Will stop flight code if the drone lands
-    termination_task = asyncio.ensure_future(observe_is_in_air(drone, comm))
+    termination_task = asyncio.ensure_future(observe_is_in_air(drone, self))
 
     try:
         # Initialize the state machine at the current state
-        initial_state: State = State[comm.get_state()](state_settings)
-        state_machine: StateMachine = StateMachine(initial_state, drone)
-        await state_machine.run()
+        self.__state != ""
     except Exception:
         logging.exception("Exception occurred in state machine")
         try:
@@ -227,10 +203,10 @@ async def start_flight(comm: Communication, drone: System, state_settings: State
             await drone.action.land()
         except:
             logging.error("No system available")
-            comm.set_state("final")
+            self.__state = "final"
             return
 
-    comm.set_state("final")
+    self.__state = "final"
 
     await termination_task
     flight_mode_task.cancel()
