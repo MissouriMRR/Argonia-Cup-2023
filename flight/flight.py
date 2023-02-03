@@ -64,3 +64,15 @@ async def wait_for_drone(drone: System) -> None:
         if state.is_connected:
             logging.info("Connected to drone with UUID %s", state.uuid)
             return
+
+async def check_for_exit(drone: System) -> None:
+    try:
+        pass
+    except KeyboardInterrupt:
+        # Ctrl-C was pressed
+        # TODO send a message to the flight process to land instead of
+        # basically overwriting the process
+        logging.info("Ctrl-C Pressed, forcing drone to land")
+        await drone.land
+
+        logging.info("Drone landed, goodbye!")
