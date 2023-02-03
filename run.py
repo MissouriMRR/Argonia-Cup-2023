@@ -2,34 +2,15 @@
 """Main runnable file for the codebase"""
 
 import logging
+import asyncio
 import flight.config as config
+from mavsdk import System
 from flight.upload_mission import upload_mission
 from flight.run_mission import run_mission
-from flight import wait_for_drone, log_flight_mode, observe_is_in_air
+from flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
-
-if __name__ == "__main__":
-
-    logging.info(">> Starting landing process")
-
-    # Parse through arguments, create competition and simulation variables.
-    parser: argparse.ArgumentParser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--competition", help="Using the competition waypoints", action="store_true")
-    parser.add_argument("-s", "--simulation", help="Using a simulator", action="store_true")
-    args = parser.parse_args()
-    competition: bool = args.competition
-    simulation: bool = args.simulation
-    logging.debug("Competition flag %s", "enabled" if competition else "disabled")
-    logging.debug("Simulation flag %s", "enabled" if simulation else "disabled")
-
-    """Starts the asyncronous event loop for the flight code"""
-    asyncio.get_event_loop().run_until_complete(
-        init_and_begin(sim, comp, state_settings)
-    )
-
-
 
 async def init_and_begin(simulation: bool, competition: bool) -> None:
     """
@@ -61,7 +42,7 @@ async def start_flight(drone: System, competition: bool) -> None:
     # Continuously log flight mode changes
     flight_mode_task = asyncio.ensure_future(log_flight_mode(drone))
     # Will stop flight code if the drone lands
-    termination_task = asyncio.ensure_future(observe_is_in_air(drone, self))
+    termination_task = asyncio.ensure_future(observe_is_in_air(drone))
 
     try:
         logging.debug("Running upload_mission")
@@ -81,3 +62,22 @@ async def init_drone(simulation: bool) -> System:
         await asyncio.wait_for(wait_for_drone(drone), timeout=5)
     except asyncio.TimeoutError:
         raise DroneNotFoundError()
+
+if __name__ == "__main__":
+
+    logging.info(">> Starting landing process")
+
+    # Parse through arguments, create competition and simulation variables.
+    parser: argparse.ArgumentParser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--competition", help="Using the competition waypoints", action="store_true")
+    parser.add_argument("-s", "--simulation", help="Using a simulator", action="store_true")
+    args = parser.parse_args()
+    competition: bool = args.competition
+    simulation: bool = args.simulation
+    logging.debug("Competition flag %s", "enabled" if competition else "disabled")
+    logging.debug("Simulation flag %s", "enabled" if simulation else "disabled")
+
+    """Starts the asyncronous event loop for the flight code"""
+    asyncio.get_event_loop().run_until_complete(
+        init_and_begin(simulation, competition)
+    )
