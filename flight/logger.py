@@ -34,7 +34,7 @@ def init_logger(queue: Queue) -> QueueListener:
     return QueueListener(queue, file, console)
 
 
-def worker_configurer(queue: Queue):
+def worker_configurer(queue: Queue) -> None:
     """
     When this is run, it configures the logger of this process to submit logs to the logging process (QueueListener)
     Parameters

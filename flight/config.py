@@ -3,7 +3,6 @@ from mavsdk import System
 
 WAIT: float = 2.0       # Seconds
 
-
 async def config_params(drone: System) -> None:
     """
     Sets certain parameters within the drone for flight

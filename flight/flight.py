@@ -14,28 +14,11 @@ CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhaw
 
 
 class DroneNotFoundError(Exception):
-    """Exception for when the drone doesn't connect"""
+    """
+    Exception for when the drone doesn't connect
+    """
     logging.warning("WARNING!!!! DRONE NOT FOUND!?!?!?!?@@!@?!@")
     pass
-
-async def _check_arm_or_arm(self, drone: System) -> None:
-        """
-        Verifies that the drone is armed, if not armed, arms the drone
-        Parameters
-        ---------
-            drone: System
-                The drone system; used for flight operations.
-        Returns
-        -------
-            None
-        """
-        async for is_armed in drone.telemetry.armed():
-            if not is_armed:
-                logging.debug("Not armed. Attempting to arm")
-                await drone.action.arm()
-            else:
-                logging.warning("Drone armed")
-                break
 
 async def log_flight_mode(drone: System) -> None:
     """
@@ -61,8 +44,8 @@ async def observe_is_in_air(drone: System, self) -> None:
     ----------
         drone: System
             MAVSDK object for drone control
-        comm: Communication
-            Communication object for collaboration in pipeline
+        self
+            self for commands current drone situation
     """
 
     was_in_air: bool = False
@@ -90,32 +73,32 @@ async def wait_for_drone(drone: System) -> None:
             return
 
 
-def flight(self, log_queue: Queue, simulation) -> None:
+def flight(self, log_queue: Queue, simulation: bool) -> None:
     """
     Starts the asynchronous event loop for the flight code
     Parameters
     ----------
-        comm: Communication
-            Communication object for collaboration in pipeline
+        self
+            self for commands current drone situation
         log_queue: Queue
             Queue object to hold logging processes
-        state_settings: StateSettings
-            Settings for the flight state machine
+        simulation: bool
+            boolean that helps decide where the drone lands
     """
     logger.worker_configurer(log_queue)
     logging.debug("Flight process started")
     asyncio.get_event_loop().run_until_complete(init_and_begin(self, simulation))
 
 
-async def init_and_begin(self, simulation) -> None:
+async def init_and_begin(self, simulation: bool) -> None:
     """
     Creates drone object and passes it to start_flight
     Parameters
     ----------
-        comm: Communication
-            Communication object for collaboration in pipeline
-        state_settings: StateSettings
-            Settings for flight state machine
+        self
+            self for commands current drone situation
+        simulation: bool
+            boolean that helps decide where the drone lands
     """
     try:
         drone: System = await init_drone(simulation)
@@ -128,20 +111,20 @@ async def init_and_begin(self, simulation) -> None:
         return
 
 
-async def init_drone(simulation) -> System:
+async def init_drone(simulation: bool) -> System:
     """
     Connects to the pixhawk or simulator and returns the drone
     Parameters
     ----------
-        state_settings: StateSettings
-            Settings for flight state machine
+        simulation: bool
+            boolean that helps decide where the drone lands
     Returns
     -------
         System
             MAVSDK System object corresponding to the drone
     """
 
-    sys_addr: str = SIM_ADDR if run.simulation else CONTROLLER_ADDR
+    sys_addr: str = SIM_ADDR if simulation else CONTROLLER_ADDR
     drone: System = System()
     await drone.connect(system_address=sys_addr)
     logging.debug("Waiting for drone to connect...")
@@ -161,12 +144,10 @@ async def start_flight(self, drone: System) -> None:
     Creates the state machine and watches for exceptions
     Parameters
     ----------
-        comm: Communication
-            Communication object for collaboration in pipeline
+        self
+            self for commands current drone situation
         drone: System
             MAVSDK object for physcial control of the drone
-        state_settings: StateSettings
-            Settings for flight state machine
     """
     # Continuously log flight mode changes
     flight_mode_task = asyncio.ensure_future(log_flight_mode(drone))
