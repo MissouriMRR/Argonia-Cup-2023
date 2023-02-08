@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Main runnable file for the codebase"""
 
+import argparse
 import logging
 import asyncio
+from multiprocessing import Queue
+from flight import logger, upload_mission
 import flight.config as config
 from mavsdk import System
 from flight.upload_mission import upload_mission
 from flight.run_mission import run_mission
-from flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
+from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
@@ -36,6 +39,7 @@ async def start_flight(drone: System, competition: bool) -> None:
     # Run config params in config file
     await config.config_params(drone)
 
+    log_queue: Queue = Queue(-1)
     logger.worker_configurer(log_queue)
     logging.debug("Flight process started")
 
@@ -46,7 +50,7 @@ async def start_flight(drone: System, competition: bool) -> None:
 
     try:
         logging.debug("Running upload_mission")
-        await upload_mission(competition)
+        await upload_mission.upload_mission(competition)
         logging.debug("Running run_mission")
         await run_mission(competition)
     except:

@@ -4,10 +4,10 @@ Connects to the drone and uploads the mission plan for landing the drone.
 import argparse
 import asyncio
 import logging
+import sys
 from mavsdk import System
 from mavsdk.mission import MissionItem, MissionPlan
-
-from intake_gps import Waypoint, extract_gps
+from flight import intake_gps
 
 
 async def upload_mission(competition: bool) -> None:
@@ -36,9 +36,9 @@ async def upload_mission(competition: bool) -> None:
             break
 
     logging.info("Getting target location and ground altitude for landing...")
-    target_data: Waypoint
+    target_data: intake_gps.Waypoint
     ground_altitude: float
-    target_data, ground_altitude = extract_gps(waypoint_path)
+    target_data, ground_altitude = intake_gps.extract_gps(waypoint_path)
     logging.info(f"Target Location: {target_data}")
     logging.info(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]

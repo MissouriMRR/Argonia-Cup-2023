@@ -5,10 +5,13 @@ import asyncio
 import logging
 
 from mavsdk import System
+from flight import intake_gps, landing
 
-from intake_gps import Waypoint, extract_gps
-from landing import manual_land
+# from intake_gps import Waypoint, extract_gps
 import argparse
+import sys
+
+# sys.path.append("./flight/intake_gps.py")
 
 
 async def run_mission(competition: bool) -> None:
@@ -47,9 +50,9 @@ async def run_mission(competition: bool) -> None:
     await drone.action.set_maximum_speed(20)
 
     logging.info("Getting target location and ground altitude for landing...")
-    target_data: Waypoint
+    target_data: intake_gps.Waypoint
     ground_altitude: float
-    target_data, ground_altitude = extract_gps(waypoint_path)
+    target_data, ground_altitude = intake_gps.extract_gps(waypoint_path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
     # await goto.move_to(drone,target_latitude,target_longitude, 500)
@@ -63,7 +66,7 @@ async def run_mission(competition: bool) -> None:
             break
 
     logging.info("Starting landing process...")
-    await manual_land(drone, target_latitude, target_longitude)
+    await landing.manual_land(drone, target_latitude, target_longitude)
 
 
 if __name__ == "__main__":

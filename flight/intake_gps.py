@@ -25,7 +25,7 @@ class Waypoint(NamedTuple):
     altitude: float
 
 
-def extract_gps(path: str) -> tuple[Waypoint, float]:
+async def extract_gps(path: str) -> tuple[Waypoint, float]:
     """
     Returns the target location and ground altitude from a json file specified by a parameter.
 
