@@ -29,7 +29,7 @@ async def log_flight_mode(drone: System) -> None:
             logging.debug("Flight mode: %s", flight_mode)
 
 
-async def observe_is_in_air(drone: System, self) -> None:
+async def observe_is_in_air(drone: System) -> None:
     """
     Monitors whether the drone is flying or not and
     returns after landing
@@ -48,7 +48,6 @@ async def observe_is_in_air(drone: System, self) -> None:
             was_in_air: bool = is_in_air
 
         if was_in_air and not is_in_air:
-            self.__state = "exit"
             return
 
 
@@ -62,7 +61,7 @@ async def wait_for_drone(drone: System) -> None:
     """
     async for state in drone.core.connection_state():
         if state.is_connected:
-            logging.info("Connected to drone with UUID %s", state.uuid)
+            logging.info("Connected to drone with UUID")
             return
 
 async def check_for_exit(drone: System) -> None:

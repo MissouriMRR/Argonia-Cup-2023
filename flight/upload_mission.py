@@ -38,7 +38,7 @@ async def upload_mission(competition: bool) -> None:
     logging.info("Getting target location and ground altitude for landing...")
     target_data: intake_gps.Waypoint
     ground_altitude: float
-    target_data, ground_altitude = intake_gps.extract_gps(waypoint_path)
+    target_data, ground_altitude = await intake_gps.extract_gps(waypoint_path)
     logging.info(f"Target Location: {target_data}")
     logging.info(f"Altitude: {ground_altitude}")
     target_latitude = target_data[0]

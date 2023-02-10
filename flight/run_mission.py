@@ -52,7 +52,7 @@ async def run_mission(competition: bool) -> None:
     logging.info("Getting target location and ground altitude for landing...")
     target_data: intake_gps.Waypoint
     ground_altitude: float
-    target_data, ground_altitude = intake_gps.extract_gps(waypoint_path)
+    target_data, ground_altitude = await intake_gps.extract_gps(waypoint_path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
     # await goto.move_to(drone,target_latitude,target_longitude, 500)

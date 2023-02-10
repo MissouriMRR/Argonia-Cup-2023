@@ -8,7 +8,7 @@ from multiprocessing import Queue
 from flight import logger, upload_mission
 import flight.config as config
 from mavsdk import System
-from flight.upload_mission import upload_mission
+from flight import upload_mission
 from flight.run_mission import run_mission
 from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
 
@@ -66,6 +66,7 @@ async def init_drone(simulation: bool) -> System:
         await asyncio.wait_for(wait_for_drone(drone), timeout=5)
     except asyncio.TimeoutError:
         raise DroneNotFoundError()
+    return drone
 
 if __name__ == "__main__":
 
