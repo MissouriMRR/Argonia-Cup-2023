@@ -10,8 +10,10 @@ class DroneNotFoundError(Exception):
     """
     Exception for when the drone doesn't connect
     """
+
     logging.warning("DRONE NOT FOUND!")
     pass
+
 
 async def log_flight_mode(drone: System) -> None:
     """
@@ -61,6 +63,7 @@ async def wait_for_drone(drone: System) -> None:
         if state.is_connected:
             logging.info("Connected to drone with UUID")
             return
+
 
 async def check_for_exit(drone: System) -> None:
     """

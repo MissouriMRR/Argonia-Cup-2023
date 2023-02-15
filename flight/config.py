@@ -1,7 +1,8 @@
 """File to hold important constant values and configure drone upon startup"""
 from mavsdk import System
 
-WAIT: float = 2.0       # Seconds
+WAIT: float = 2.0  # Seconds
+
 
 async def config_params(drone: System) -> None:
     """
