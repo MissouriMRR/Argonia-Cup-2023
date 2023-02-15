@@ -10,7 +10,7 @@ LOG_FORMAT: str = "%(levelname)s | %(asctime)s @  %(processName)s:%(funcName)s >
 LOG_LEVEL = logging.DEBUG
 
 
-def init_logger(queue: Queue) -> QueueListener:
+def init_logger(queue: Queue[str]) -> QueueListener:
     """
     Creates a QueueListener that will process all log messages throughout the application
     Parameters
@@ -28,13 +28,13 @@ def init_logger(queue: Queue) -> QueueListener:
     file: FileHandler = logging.FileHandler(LOG_FILE, "a")
     file.setFormatter(file_formatter)
 
-    console: StreamHandler = logging.StreamHandler()
+    console: StreamHandler[str] = logging.StreamHandler()
     console.setFormatter(console_formatter)
 
     return QueueListener(queue, file, console)
 
 
-def worker_configurer(queue: Queue) -> None:
+def worker_configurer(queue: Queue[str]) -> None:
     """
     When this is run, it configures the logger of this process to submit logs to the logging process (QueueListener)
     Parameters

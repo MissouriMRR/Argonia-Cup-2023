@@ -25,7 +25,7 @@ async def log_flight_mode(drone: System) -> None:
 
     async for flight_mode in drone.telemetry.flight_mode():
         if flight_mode is not previous_flight_mode:
-            previous_flight_mode: str = flight_mode
+            previous_flight_mode = flight_mode
             logging.debug("Flight mode: %s", flight_mode)
 
 
@@ -43,7 +43,7 @@ async def observe_is_in_air(drone: System) -> None:
 
     async for is_in_air in drone.telemetry.in_air():
         if is_in_air:
-            was_in_air: bool = is_in_air
+            was_in_air = is_in_air
 
         if was_in_air and not is_in_air:
             return
