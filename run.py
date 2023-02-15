@@ -48,7 +48,7 @@ async def start_flight(drone: System, competition: bool) -> None:
     # Run config params in config file
     await config.config_params(drone)
 
-    log_queue: Queue = Queue(-1)
+    log_queue: Queue[str] = Queue(-1)
     logger.worker_configurer(log_queue)
     logging.debug("Flight process started")
 
@@ -61,7 +61,7 @@ async def start_flight(drone: System, competition: bool) -> None:
         logging.debug("Running upload_mission")
         await upload_mission.upload_mission(competition)
         logging.debug("Running run_mission")
-        await run_mission(competition)
+        await run_mission.run_mission(competition)
     except:
         logging.exception("Exception in flight process occurred")
 

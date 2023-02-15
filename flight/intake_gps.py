@@ -2,6 +2,7 @@
 Contains the extract_gps() function for extracting data out of
 a provided target waypoint data JSON file for the Argonia Cup competition.
 """
+import asyncio
 from typing import Any, NamedTuple
 import json
 
@@ -66,8 +67,7 @@ async def extract_gps(path: str) -> tuple[Waypoint, float]:
     return target_data, ground_altitude
 
 
-# If run on it's own, use file path from command argument
-if __name__ == "__main__":
+async def main() -> None:
     import argparse
 
     # Read file to be used as the data file using the -file argument
@@ -78,6 +78,12 @@ if __name__ == "__main__":
     # Unpack the tuple that is returned
     target_location: Waypoint
     launch_altitude: float
-    target_location, launch_altitude = extract_gps(vars(args)["file"])
+
+    target_location, launch_altitude = await extract_gps(vars(args)["file"])
     print(f"Target Location: {target_location}")
     print(f"Altitude: {launch_altitude}")
+
+
+# If run on it's own, use file path from command argument
+if __name__ == "__main__":
+    asyncio.run(main())
