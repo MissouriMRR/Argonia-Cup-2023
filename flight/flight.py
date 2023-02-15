@@ -37,8 +37,6 @@ async def observe_is_in_air(drone: System) -> None:
     ----------
         drone: System
             MAVSDK object for drone control
-        self
-            self for commands current drone situation
     """
 
     was_in_air: bool = False
@@ -65,6 +63,13 @@ async def wait_for_drone(drone: System) -> None:
             return
 
 async def check_for_exit(drone: System) -> None:
+    """
+    Checks if program was ended through manual keyboard input
+    Parameters
+    ----------
+        drone: System
+                MAVSDK object for drone control
+    """
     try:
         pass
     except KeyboardInterrupt:
