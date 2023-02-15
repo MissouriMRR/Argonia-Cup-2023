@@ -1,5 +1,6 @@
 """Logging configuration and functions"""
 import logging
+from typing import TextIO
 from datetime import datetime
 from multiprocessing import Queue
 from logging import Formatter, FileHandler, StreamHandler
@@ -28,7 +29,7 @@ def init_logger(queue: Queue[str]) -> QueueListener:
     file: FileHandler = logging.FileHandler(LOG_FILE, "a")
     file.setFormatter(file_formatter)
 
-    console: StreamHandler[str] = logging.StreamHandler()
+    console: StreamHandler[TextIO] = logging.StreamHandler()
     console.setFormatter(console_formatter)
 
     return QueueListener(queue, file, console)
