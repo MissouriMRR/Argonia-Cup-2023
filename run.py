@@ -92,7 +92,6 @@ async def init_drone(simulation: bool) -> System:
 
 
 if __name__ == "__main__":
-
     logging.info(">> Starting landing process")
 
     # Parse through arguments, create competition and simulation variables.
