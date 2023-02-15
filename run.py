@@ -5,11 +5,9 @@ import argparse
 import logging
 import asyncio
 from multiprocessing import Queue
-from flight import logger, upload_mission
+from flight import logger, upload_mission, run_mission
 import flight.config as config
 from mavsdk import System
-from flight import upload_mission
-from flight.run_mission import run_mission
 from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator

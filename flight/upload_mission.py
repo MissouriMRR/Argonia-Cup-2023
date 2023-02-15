@@ -4,7 +4,6 @@ Connects to the drone and uploads the mission plan for landing the drone.
 import argparse
 import asyncio
 import logging
-import sys
 from mavsdk import System
 from mavsdk.mission import MissionItem, MissionPlan
 from flight import intake_gps
