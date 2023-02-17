@@ -2,6 +2,7 @@
 import logging
 from mavsdk import System
 from mavsdk.core import ConnectionState
+
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
 
