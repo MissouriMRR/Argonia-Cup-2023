@@ -14,14 +14,16 @@ LOG_LEVEL = logging.DEBUG
 def init_logger(queue: Queue[str]) -> QueueListener:
     """
     Creates a QueueListener that will process all log messages throughout the application
+
     Parameters
     ----------
-        queue: Queue
-            Queue object that holds logging processes
+    queue: Queue
+        Queue object that holds logging processes
+    
     Returns
     -------
-        QueueListener
-            Object to process log messages
+    queuelistener: QueueListener
+        Object to process log messages
     """
     console_formatter: Formatter = logging.Formatter(LOG_FORMAT)
     file_formatter: Formatter = logging.Formatter(LOG_FORMAT)
@@ -37,13 +39,14 @@ def init_logger(queue: Queue[str]) -> QueueListener:
 
 def worker_configurer(queue: Queue[str]) -> None:
     """
-    When this is run, it configures the logger of this process to submit logs to the logging process (QueueListener)
+    it configures the logger of this process to submit logs to the logging process (QueueListener)
+
     Parameters
     ----------
-        queue: Queue
-            Queue object that holds logging processes
+    queue: Queue
+        Queue object that holds logging processes
     """
     queue_handler: QueueHandler = QueueHandler(queue)  # Just the one handler needed
-    root = logging.getLogger()
+    root: logging.Logger = logging.getLogger()
     root.addHandler(queue_handler)
     root.setLevel(LOG_LEVEL)

@@ -7,12 +7,7 @@ import logging
 from mavsdk import System
 from flight import intake_gps, landing
 
-# from intake_gps import Waypoint, extract_gps
 import argparse
-import sys
-
-# sys.path.append("./flight/intake_gps.py")
-
 
 async def run_mission(competition: bool) -> None:
     """
@@ -55,7 +50,6 @@ async def run_mission(competition: bool) -> None:
     target_data, ground_altitude = await intake_gps.extract_gps(waypoint_path)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-    # await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
     # Once the drone is below 75m the slow landing code begins to run

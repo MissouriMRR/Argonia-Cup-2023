@@ -109,4 +109,4 @@ if __name__ == "__main__":
     logging.debug("Simulation flag %s", "enabled" if simulation else "disabled")
 
     """Starts the asyncronous event loop for the flight code"""
-    asyncio.get_event_loop().run_until_complete(init_and_begin(simulation, competition))
+    asyncio.run(init_and_begin(simulation, competition))
