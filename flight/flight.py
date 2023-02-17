@@ -65,7 +65,7 @@ async def wait_for_drone(drone: System) -> None:
         MAVSDK object for drone control
     """
 
-    state: drone.core.ConnectionState
+    state: str
     async for state in drone.core.connection_state():
         if state.is_connected:
             logging.info("Connected to drone with UUID: %s", state.uuid)
