@@ -9,6 +9,7 @@ from flight import intake_gps, landing
 
 import argparse
 
+
 async def run_mission(competition: bool) -> None:
     """
     Uses data from a json file to retrieve a mission then runs it to get the drone above the target
