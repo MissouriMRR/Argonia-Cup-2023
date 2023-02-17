@@ -45,7 +45,7 @@ async def observe_is_in_air(drone: System) -> None:
     """
 
     was_in_air: bool = False
-    is_in_air:bool
+    is_in_air: bool
 
     async for is_in_air in drone.telemetry.in_air():
         if is_in_air:
@@ -85,7 +85,7 @@ async def check_for_exit(drone: System) -> None:
         pass
     except KeyboardInterrupt:
         # Ctrl-C was pressed
-        #telling the drone to land
+        # telling the drone to land
         # basically overwriting the process
         logging.info("Ctrl-C Pressed, forcing drone to land")
         await drone.action.land()
