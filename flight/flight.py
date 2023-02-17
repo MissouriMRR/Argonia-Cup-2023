@@ -12,18 +12,20 @@ class DroneNotFoundError(Exception):
     """
 
     logging.warning("DRONE NOT FOUND!")
-    pass
 
 
 async def log_flight_mode(drone: System) -> None:
     """
     Logs the flight modes entered during flight by the drone
+
     Parameters
     ----------
-        drone: System
-            MAVSDK object to access drone properties
+    drone: System
+        MAVSDK object to access drone properties
     """
+
     previous_flight_mode: str = ""
+    flight_mode: str
 
     async for flight_mode in drone.telemetry.flight_mode():
         if flight_mode is not previous_flight_mode:
@@ -35,13 +37,15 @@ async def observe_is_in_air(drone: System) -> None:
     """
     Monitors whether the drone is flying or not and
     returns after landing
+
     Parameters
     ----------
-        drone: System
-            MAVSDK object for drone control
+    drone: System
+        MAVSDK object for drone control
     """
 
     was_in_air: bool = False
+    is_in_air:bool
 
     async for is_in_air in drone.telemetry.in_air():
         if is_in_air:
@@ -54,32 +58,36 @@ async def observe_is_in_air(drone: System) -> None:
 async def wait_for_drone(drone: System) -> None:
     """
     Waits for the drone to be connected and returns
+
     Parameters
     ----------
-        drone: System
-            MAVSDK object for drone control
+    drone: System
+        MAVSDK object for drone control
     """
+
+    state: drone.core.ConnectionState
     async for state in drone.core.connection_state():
         if state.is_connected:
-            logging.info("Connected to drone with UUID")
+            logging.info("Connected to drone with UUID: %s", state.uuid)
             return
 
 
 async def check_for_exit(drone: System) -> None:
     """
     Checks if program was ended through manual keyboard input
+
     Parameters
     ----------
-        drone: System
-                MAVSDK object for drone control
+    drone: System
+        MAVSDK object for drone control
     """
     try:
         pass
     except KeyboardInterrupt:
         # Ctrl-C was pressed
-        # TODO send a message to the flight process to land instead of
+        #telling the drone to land
         # basically overwriting the process
         logging.info("Ctrl-C Pressed, forcing drone to land")
-        await drone.land
+        await drone.action.land()
 
         logging.info("Drone landed, goodbye!")

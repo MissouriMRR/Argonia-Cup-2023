@@ -10,8 +10,8 @@ async def config_params(drone: System) -> None:
 
     Parameters
     ----------
-        drone: System
-            MAVSDK object for manual drone control & manipulation
+    drone: System
+        MAVSDK object for manual drone control & manipulation
     """
 
     # Set data link loss failsafe mode HOLD
