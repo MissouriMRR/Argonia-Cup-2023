@@ -19,7 +19,7 @@ def init_logger(queue: Queue[str]) -> QueueListener:
     ----------
     queue: Queue
         Queue object that holds logging processes
-    
+
     Returns
     -------
     queuelistener: QueueListener
