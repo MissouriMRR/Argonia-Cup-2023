@@ -4,7 +4,7 @@ Lands the drone precisely on the target using goto and slowing it down as it get
 from mavsdk import System
 import mavsdk as sdk
 import logging
-import goto
+from flight import goto
 
 
 async def manual_land(drone: System, Target_Latitude: float, Target_Longitude: float) -> None:
