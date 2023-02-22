@@ -81,5 +81,5 @@ async def check_for_exit() -> None:
         pass
     except KeyboardInterrupt:
         # Ctrl-C was pressed
-        logging.info("Ctrl-C Pressed, forcing drone to land")
+        logging.info("Ctrl-C Pressed, quitting program")
         quit()
