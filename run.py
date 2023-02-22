@@ -8,7 +8,7 @@ from multiprocessing import Queue
 from flight import logger, upload_mission, run_mission
 import flight.config as config
 from mavsdk import System
-from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, DroneNotFoundError
+from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, check_for_exit, DroneNotFoundError
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
@@ -20,7 +20,7 @@ async def init_and_begin(simulation: bool, competition: bool) -> None:
     Parameters
     ----------
     simulation: bool
-        Decides which connection address to use
+        When true, run with simulation connection address, otherwise use physical drone connection address
     competition: bool
         Decides whether to use competition waypoints or not
     """
@@ -56,6 +56,8 @@ async def start_flight(drone: System, competition: bool) -> None:
     asyncio.ensure_future(log_flight_mode(drone))
     # Will stop flight code if the drone lands
     asyncio.ensure_future(observe_is_in_air(drone))
+    # Handles CTRL-C / interrupts
+    asyncio.ensure_future(check_for_exit())
 
     try:
         logging.debug("Running upload_mission")
