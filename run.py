@@ -7,7 +7,13 @@ from multiprocessing import Queue
 from flight import logger, upload_mission, run_mission
 import flight.config as config
 from mavsdk import System
-from flight.flight import wait_for_drone, log_flight_mode, observe_is_in_air, check_for_exit, DroneNotFoundError
+from flight.flight import (
+    wait_for_drone,
+    log_flight_mode,
+    observe_is_in_air,
+    check_for_exit,
+    DroneNotFoundError,
+)
 
 SIM_ADDR: str = "udp://:14540"  # Address to connect to the simulator
 CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhawk board
