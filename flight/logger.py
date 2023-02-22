@@ -17,7 +17,7 @@ def init_logger(queue: Queue[str]) -> QueueListener:
 
     Parameters
     ----------
-    queue: Queue
+    queue: Queue[str]
         Queue object that holds logging processes
 
     Returns
@@ -39,11 +39,11 @@ def init_logger(queue: Queue[str]) -> QueueListener:
 
 def worker_configurer(queue: Queue[str]) -> None:
     """
-    it configures the logger of this process to submit logs to the logging process (QueueListener)
+    It configures the logger of this process to submit logs to the logging process (QueueListener)
 
     Parameters
     ----------
-    queue: Queue
+    queue: Queue[str]
         Queue object that holds logging processes
     """
     queue_handler: QueueHandler = QueueHandler(queue)  # Just the one handler needed
