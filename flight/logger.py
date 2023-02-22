@@ -1,5 +1,6 @@
 """Logging configuration and functions"""
 import logging
+from typing import TextIO
 from datetime import datetime
 from multiprocessing import Queue
 from logging import Formatter, FileHandler, StreamHandler
@@ -13,14 +14,16 @@ LOG_LEVEL = logging.DEBUG
 def init_logger(queue: Queue[str]) -> QueueListener:
     """
     Creates a QueueListener that will process all log messages throughout the application
+
     Parameters
     ----------
-        queue: Queue
-            Queue object that holds logging processes
+    queue: Queue
+        Queue object that holds logging processes
+
     Returns
     -------
-        QueueListener
-            Object to process log messages
+    queuelistener: QueueListener
+        Object to process log messages
     """
     console_formatter: Formatter = logging.Formatter(LOG_FORMAT)
     file_formatter: Formatter = logging.Formatter(LOG_FORMAT)
@@ -28,7 +31,7 @@ def init_logger(queue: Queue[str]) -> QueueListener:
     file: FileHandler = logging.FileHandler(LOG_FILE, "a")
     file.setFormatter(file_formatter)
 
-    console: StreamHandler[str] = logging.StreamHandler()
+    console: StreamHandler[TextIO] = logging.StreamHandler()
     console.setFormatter(console_formatter)
 
     return QueueListener(queue, file, console)
@@ -36,13 +39,14 @@ def init_logger(queue: Queue[str]) -> QueueListener:
 
 def worker_configurer(queue: Queue[str]) -> None:
     """
-    When this is run, it configures the logger of this process to submit logs to the logging process (QueueListener)
+    it configures the logger of this process to submit logs to the logging process (QueueListener)
+
     Parameters
     ----------
-        queue: Queue
-            Queue object that holds logging processes
+    queue: Queue
+        Queue object that holds logging processes
     """
     queue_handler: QueueHandler = QueueHandler(queue)  # Just the one handler needed
-    root = logging.getLogger()
+    root: logging.Logger = logging.getLogger()
     root.addHandler(queue_handler)
     root.setLevel(LOG_LEVEL)

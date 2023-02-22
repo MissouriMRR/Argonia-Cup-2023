@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Main runnable file for the codebase"""
 
 import argparse
@@ -17,6 +16,7 @@ CONTROLLER_ADDR: str = "serial:///dev/ttyUSB0"  # Address to connect to a pixhaw
 async def init_and_begin(simulation: bool, competition: bool) -> None:
     """
     Creates drone object and passes it to start_flight
+
     Parameters
     ----------
     simulation: bool
@@ -38,6 +38,7 @@ async def init_and_begin(simulation: bool, competition: bool) -> None:
 async def start_flight(drone: System, competition: bool) -> None:
     """
     Starts the flight process and runs upload_mission and run_mission
+
     Parameters
     ----------
     drone: System
@@ -71,6 +72,7 @@ async def start_flight(drone: System, competition: bool) -> None:
 async def init_drone(simulation: bool) -> System:
     """
     Creates drone object depending on address and returns it
+
     Parameters
     ----------
     simulation: bool
@@ -109,4 +111,4 @@ if __name__ == "__main__":
     logging.debug("Simulation flag %s", "enabled" if simulation else "disabled")
 
     """Starts the asyncronous event loop for the flight code"""
-    asyncio.get_event_loop().run_until_complete(init_and_begin(simulation, competition))
+    asyncio.run(init_and_begin(simulation, competition))

@@ -7,11 +7,7 @@ import logging
 from mavsdk import System
 from flight import intake_gps, landing
 
-# from intake_gps import Waypoint, extract_gps
 import argparse
-import sys
-
-# sys.path.append("./flight/intake_gps.py")
 
 
 async def run_mission(competition: bool) -> None:
@@ -23,7 +19,7 @@ async def run_mission(competition: bool) -> None:
     Parameters
     ----------
     competition : bool
-        Decides if competition waypoints are used in the mission or not.
+        Decides if competition waypoint are used in the mission or not.
 
     Notes
     -----
@@ -31,11 +27,11 @@ async def run_mission(competition: bool) -> None:
     It can be run by python3 run_mission.py -file {json file path}
     """
 
-    waypoint_path: str
+    waypoint: str
     if competition:
-        waypoint_path = "flight/data/target_data.json"
+        waypoint = "flight/data/target_data.json"
     else:
-        waypoint_path = "flight/data/golf_target.json"
+        waypoint = "flight/data/golf_target.json"
 
     drone = System()
     await drone.connect(system_address="udp://:14540")
@@ -52,10 +48,9 @@ async def run_mission(competition: bool) -> None:
     logging.info("Getting target location and ground altitude for landing...")
     target_data: intake_gps.Waypoint
     ground_altitude: float
-    target_data, ground_altitude = await intake_gps.extract_gps(waypoint_path)
+    target_data, ground_altitude = await intake_gps.extract_gps(waypoint)
     target_latitude = target_data[0]
     target_longitude = target_data[1]
-    # await goto.move_to(drone,target_latitude,target_longitude, 500)
     await drone.mission.start_mission()
     logging.info("running the mission")
     # Once the drone is below 75m the slow landing code begins to run
