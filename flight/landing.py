@@ -1,6 +1,7 @@
 """
 Lands the drone precisely on the target using goto and slowing it down as it gets closer to the ground
 """
+
 from mavsdk import System
 import mavsdk as sdk
 import logging

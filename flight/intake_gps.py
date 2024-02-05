@@ -2,6 +2,7 @@
 Contains the extract_gps() function for extracting data out of
 a provided target waypoint data JSON file for the Argonia Cup competition.
 """
+
 import asyncio
 from typing import Any, NamedTuple
 import json

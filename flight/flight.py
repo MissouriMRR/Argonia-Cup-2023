@@ -1,4 +1,5 @@
 """Launch code for flight state machine"""
+
 import logging
 from mavsdk import System
 from mavsdk.core import ConnectionState

@@ -1,4 +1,5 @@
 """Logging configuration and functions"""
+
 import logging
 from typing import TextIO
 from datetime import datetime
